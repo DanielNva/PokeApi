@@ -14,49 +14,25 @@ if (isset($_GET['id'])) {
     $stmt->bind_param("i", $id);
     $stmt->execute();
     $result = $stmt->get_result();
+    $pokemon = $result->fetch_assoc();
 
-    if ($result->num_rows > 0) {
-        $pokemon = $result->fetch_assoc();
+    if ($pokemon) {
         // Mostrar el formulario de edición con los datos actuales
 ?>
         <!DOCTYPE html>
         <html lang="es">
+
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Editar Pokémon</title>
-            <script>
-                async function submitForm(event) {
-                    event.preventDefault(); // Previene el comportamiento por defecto del formulario
-
-                    const formData = new FormData(event.target);
-                    const data = {};
-                    formData.forEach((value, key) => {
-                        data[key] = value;
-                    });
-
-                    try {
-                        const response = await fetch('update_pokemon.php', {
-                            method: 'PUT',
-                            headers: {
-                                'Content-Type': 'application/x-www-form-urlencoded'
-                            },
-                            body: new URLSearchParams(data)
-                        });
-
-                        const result = await response.json();
-                        console.log(result); // Muestra la respuesta en la consola
-
-                        // Manejo de resultados aquí (por ejemplo, mostrar un mensaje al usuario)
-                    } catch (error) {
-                        console.error('Error:', error);
-                    }
-                }
-            </script>
         </head>
+
         <body>
+
             <h1>Editar Pokémon</h1>
-            <form id="editForm" onsubmit="submitForm(event)">
+
+            <form action="update_pokemon.php" method="POST">
                 <input type="hidden" name="id" value="<?php echo htmlspecialchars($pokemon['id']); ?>">
 
                 <label for="nombre">Nombre:</label><br>
@@ -73,7 +49,10 @@ if (isset($_GET['id'])) {
 
                 <input type="submit" value="Actualizar Pokémon">
             </form>
+
+
         </body>
+
         </html>
 <?php
     } else {

@@ -44,7 +44,12 @@ $result = $conn->query($sql);
 
         <input type="submit" value="Agregar Pokémon">
     </form>
-
+    <form action="delete_pokemon.php" method="POST">
+        <input type="hidden" name="_method" value="DELETE">
+        <label for="id">ID del Pokémon a eliminar:</label>
+        <input type="number" id="id" name="id" required>
+        <input type="submit" value="Eliminar">
+    </form>
     <?php if ($result->num_rows > 0): ?>
         <table border="1">
             <tr>
@@ -64,10 +69,6 @@ $result = $conn->query($sql);
                     <td><?php echo !empty($row['rareza']) ? htmlspecialchars($row['rareza']) : 'No disponible'; ?></td>
                     <td>
                         <a href="edit_pokemon.php?id=<?php echo urlencode($row['id']); ?>">Editar</a>
-                        <form action="delete_pokemon.php" method="POST" style="display:inline;">
-                            <input type="hidden" name="id" value="<?php echo htmlspecialchars($row['id']); ?>">
-                            <input type="submit" value="Eliminar" onclick="return confirm('¿Estás seguro de que deseas eliminar este Pokémon?');">
-                        </form>
                     </td>
                 </tr>
             <?php endwhile; ?>
