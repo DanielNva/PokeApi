@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($id && $nombre && $habilidades && $genero && $rareza) {
             // Prepara la consulta de actualización
             $stmt = $conn->prepare("UPDATE pokemon SET nombre = ?, habilidades = ?, genero = ?, rareza = ? WHERE id = ?");
-            $stmt->bind_param("sssii", $nombre, $habilidades, $genero, $rareza, $id);
+            $stmt->bind_param("ssssi", $nombre, $habilidades, $genero, $rareza, $id);
 
             if ($stmt->execute()) {
                 echo json_encode([
@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Prepara la consulta de actualización
             $stmt = $conn->prepare("UPDATE pokemon SET nombre = ?, habilidades = ?, genero = ?, rareza = ? WHERE id = ?");
-            $stmt->bind_param("sssii", $nombre, $habilidades, $genero, $rareza, $id);
+            $stmt->bind_param("ssssi", $nombre, $habilidades, $genero, $rareza, $id);
 
             if ($stmt->execute()) {
                 echo "Pokémon actualizado con éxito.";
