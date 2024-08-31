@@ -10,40 +10,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['_method']) && $_POST[
     // Obtener el ID desde los datos POST
     $id = isset($_POST['id']) ? intval($_POST['id']) : null;
 
-    // Depurar para verificar el ID recibido
-    echo "ID recibido: " . $id . "\n"; // Muestra el ID recibido en la salida
-
-    // Registrar el ID en el archivo de log
-    error_log("ID recibido: " . $id);
-
     // Verifica que el ID no sea nulo
-    if ($id !== null && $id > 0) {
+    if ($id) {
         // Prepara la consulta de eliminación
         $stmt = $conn->prepare("DELETE FROM pokemon WHERE id = ?");
-        if (!$stmt) {
-            echo json_encode(["error" => "Error al preparar la consulta: " . $conn->error]);
-            error_log("Error al preparar la consulta: " . $conn->error);
-            http_response_code(500); // Indicar que hubo un error en el servidor
-            exit();
-        }
-
         $stmt->bind_param("i", $id);
 
         if ($stmt->execute()) {
+            // Devolver solo un objeto JSON sin mensajes extra
             echo json_encode([
                 "message" => "Pokémon eliminado con éxito.",
                 "id" => $id
             ]);
-            http_response_code(200); // Código de éxito
+            http_response_code(200); // Código de respuesta 200 para éxito
         } else {
             echo json_encode(["error" => "Error al eliminar Pokémon: " . $stmt->error]);
-            error_log("Error al eliminar Pokémon: " . $stmt->error);
             http_response_code(500); // Indicar que hubo un error en el servidor
         }
 
         $stmt->close();
     } else {
-        echo json_encode(["error" => "ID del Pokémon es obligatorio y debe ser mayor a 0."]);
+        echo json_encode(["error" => "ID del Pokémon es obligatorio."]);
         http_response_code(400); // Indicar que la solicitud fue incorrecta
     }
 } else {
@@ -51,6 +38,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['_method']) && $_POST[
     http_response_code(405); // Indicar que el método no está permitido
 }
 
-// Cerrar la conexión a la base de datos
 $conn->close();
-?>
+
+// Redireccionar al index.php
+header("Location: index.php");
+exit();
